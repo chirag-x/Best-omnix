@@ -1,112 +1,53 @@
-# Phase 06 — Brain Goals Planning
+# Phase 6: Brain + Goal Understanding + Dynamic Planning
 
-## Status
-NOT STARTED
+## 1. What is being introduced?
+Integration of Ollama (Gemma 4 31B), the Model Manager, Goal interpretation, and the Planner Agent producing acyclic PlanRevisions.
 
-## Purpose
-Create cognitive interpretation and dynamic planning.
+## 2. Why is it introduced now?
+To give Omnix the intelligence to translate natural language into structured, revisable task graphs rather than relying on hardcoded commands.
 
-## Why This Phase Exists
-This phase establishes the necessary foundation for Brain Goals Planning, ensuring that Omnix can fulfill its architectural requirements without resorting to hardcoded solutions.
+## 3. What components exist after this phase?
+ModelManager, OllamaProvider, GoalInterpreter, PlannerAgent.
 
-## User / System Outcome
-Upon completion, the system will support Brain Goals Planning capabilities dynamically and safely.
+## 4. What interfaces/contracts exist?
+IModelProvider, IPlanner.
 
-## Dependencies
-Phase 3, Phase 5
+## 5. What data models/concepts exist?
+Goal, DesiredOutcome, Constraint, PlanRevision, TaskGraph, TaskStep, Dependency.
 
-## Prerequisites
-Completion of dependent phases and architectural review.
+## 6. How does this specific subsystem work?
+The `ModelManager` connects to Ollama/Gemma. The user input becomes a `Goal`. The `PlannerAgent` creates a `PlanRevision` (an acyclic graph of `TaskStep`s). The Executive executes the `PlanRevision`. Model Manager handles timeouts and context length.
 
-## Architecture Context
-Integrates into the Omnix Executive pipeline. Adheres to the Zero Hardcoded Command principle.
+## 7. What depends on it?
+Phase 11 (Recovery/Replanning) and overall intelligence.
 
+## 8. What is explicitly out of scope?
+Vector DB embedding models, separate LLMs for vision/planning. Hardcoding natural language to specific capability IDs.
+
+## 9. What are the actual development tasks?
+1. Implement `OllamaProvider` integrating with local Ollama.
+2. Implement `ModelManager` (context/health management).
+3. Define `PlanRevision` and `TaskStep` data models.
+4. Implement `PlannerAgent` with Gemma prompts.
+5. Integrate Planner with Executive.
+
+## 10. What exact tests are required?
+Mock Ollama responses, PlanRevision validation (ensure acyclic), Goal generation unit tests.
+
+## 11. What real runtime validation is meaningful?
+Send a text prompt to the real local Gemma model and successfully parse a valid JSON PlanRevision.
+
+## 12. What constitutes success?
+Omnix can dynamically generate a valid plan from a natural language request using the single shared Gemma model.
+
+## 13. What failures must block progression?
+Model timeouts crashing the system, generation of cyclic task graphs, hallucinated capability IDs.
+
+## 14. What documentation must be updated?
+Update `MEMORY.md`, record Gemma inference benchmarks.
+
+## 15. What does the next phase depend on?
+Phase 7 needs goals derived from Voice.
 
 ## Technology Baseline
-This phase must follow the approved technologies and provider boundaries defined in:
-`../TECHNOLOGY.md`
-
-Relevant technologies for this phase: Ollama, Gemma 4 31B, Model Manager.
-
-## Scope
-Brain Agent, model abstraction, goal interpreter, goal representation, constraint extraction, success condition, planner, task graph, plan validation, dynamic replanning.
-
-## Out of Scope
-Direct capability execution inside the brain.
-
-## Components Introduced
-- (To be defined during detailed design)
-
-## Responsibilities
-- Implement Brain Goals Planning interfaces and logic.
-
-## Interfaces / Contracts Required
-- Standard Omnix Agent/Capability contracts.
-
-## Data Models / Concepts
-- Goal Representation
-- Task Graph
-- Planner
-
-## Runtime Flow
-1. Executive requests capability.
-2. Capability executes.
-3. Verification checks outcome.
-
-## Detailed Tasks
-- TBD during implementation planning.
-
-## Suggested Task IDs
-- OMX-PH06-001
-
-## Development Order
-1. Define interfaces.
-2. Implement core logic.
-3. Integrate with Capability Router.
-4. Add tests.
-
-## Architecture Constraints
-- MUST NOT use hardcoded natural-language command routing.
-- MUST NOT bypass the Omnix Executive.
-
-## Failure Cases
-- Missing permissions.
-- Timeout during execution.
-
-## Safety Considerations
-- Follow `SECURITY.md` guidelines for all new capabilities.
-
-## Observability Requirements
-- Structured logging for all state changes.
-
-## Unit Testing Requirements
-- 100% coverage on core logic.
-
-## Integration Testing Requirements
-- Test with simulated World State.
-
-## Real Runtime Testing Requirements
-- Pass natural language input, verify it generates a valid Task Graph representing the goal.
-
-## Acceptance Criteria
-- Natural-language input -> abstract goal representation (NOT command ID).
-
-## Definition of Done
-- Code merged.
-- Tests passing (including real runtime).
-- Documentation updated.
-
-## Required Evidence
-- Test logs demonstrating successful dynamic execution.
-
-## Documentation Updates
-- Update `MEMORY.md` and `TASKS.md`.
-
-## Risks
-- Unexpected OS behavior.
-
-## Open Questions
-- (To be determined)
-
-## Next Phase
-Proceed to Phase 07 once completed.
+This phase must follow the approved technologies and provider boundaries defined in `../TECHNOLOGY.md`.

@@ -1,62 +1,6 @@
 # Omnix
 
-## Vision
-Omnix turns natural human goals into verified computer outcomes through dynamic reasoning, specialized agents, controlled capabilities, perception, verification, and recovery.
-
-## What Omnix Is
-Omnix is a voice-first, natural-language, multi-agent AI computer-use system. It acts as the central executive intelligence, orchestrator, and identity that the user interacts with. Internally, it coordinates a fleet of specialized agents and controlled capabilities to fulfill user goals on a computer.
-
-## What Omnix Is Not
-Omnix is NOT a hardcoded command system. It is not a collection of `if command == "open chrome": open_chrome()` scripts. It is not an application-specific automation engine, and it does not map predefined phrases to fixed workflows.
-
-## Problem Omnix Solves
-Current automation and assistant tools rely on rigid command structures, hardcoded workflows, and brittle application-specific scripts. They lack contextual awareness, fail ungracefully, and cannot reason about novel situations or unknown applications. Omnix solves this by introducing dynamic reasoning, generic capabilities, and robust verification, enabling true goal-oriented computer use.
-
-## Ultimate User Experience
-The user communicates with ONE assistant: Omnix. The experience is seamless, contextual, and natural. The user provides a goal, and Omnix reasons about the state of the world, creates a plan, coordinates specialists, executes actions, verifies success, and communicates progress—all without the user feeling like they are managing a swarm of disconnected bots.
-
-## Core Philosophy
-The user tells Omnix what they want. Omnix does not search for a prewritten command; it understands the goal, reasons about the situation, dynamically selects specialists, builds a task graph, executes generic capabilities, and verifies outcomes. 
-
-## Multi-Agent Philosophy
-Internally, Omnix is a multi-agent system, but externally, it is a single identity. Specialists (e.g., Vision, Browser, Filesystem) own their specialized domains, while the Omnix Executive owns the global goal. Specialists do not act as independent peer-to-peer swarms; they are coordinated by the Executive.
-
-## Omnix Executive
-The central orchestrator of the system. It receives user input, maintains context, manages the global task lifecycle, routes sub-tasks to specialized agents, and ensures the overarching goal is met safely and effectively.
-
-## Zero Hardcoded Command Philosophy
-This is the most important architectural law. There are no fixed mappings between natural language intents and execution functions. Every action is determined dynamically based on the goal, the context, and the available generic capabilities.
-
-## Agents vs Capabilities
-**Agents think. Capabilities act.**
-Agents reason about domains (e.g., Application Agent reasons about app state). Capabilities are the reusable, primitive operations they invoke (e.g., `launch_application`, `click`, `type_text`). Agents do not contain hardcoded app-specific scripts.
-
-## Goal-Oriented Interaction
-User input is interpreted as a Desired Outcome (Goal), not a command. The system works backward from the expected state to generate a dynamic execution plan.
-
-## Dynamic Planning
-Omnix builds a task graph dynamically based on the goal, available agents, and world state. The plan can change at runtime based on intermediate observations.
-
-## Perception
-Perception is layered (OS state, UI Automation, OCR, Vision, etc.). Structured information is preferred when reliable, falling back to visual understanding when necessary. Omnix builds a "Scene Model" before acting.
-
-## Verification
-Issuing an action does not mean success. Meaningful actions must be verified against an expected state (e.g., checking if a window appeared after clicking an icon). Success is never blindly assumed.
-
-## Recovery
-Failure is expected. When an action fails verification, Omnix enters a recovery phase: diagnose, retry, re-ground, or replan, avoiding infinite loops and safely aborting when necessary.
-
-## Memory
-Omnix maintains contextual awareness of the conversation, task state, computer state, and history. References like "open the second one" are resolved using this memory architecture.
-
-## Voice-First Interaction
-Designed for fluid, natural voice communication, supporting barge-in, interruption, and contextual conversation without confusing technical execution with spoken output.
-
-## Communication / Personality
-Internal system results are separated from user-facing speech. A dedicated Communication layer handles personality, phrasing, and emotional tone, ensuring Omnix sounds natural and distinct from its technical logs.
-
-## Safety
-Safety sits between reasoning and execution. Destructive, privacy-sensitive, or external actions require confirmation. LLMs never receive unrestricted shell access.
+Omnix is a voice-first, fully autonomous, local-first AI assistant for Windows 11. It uses generic computer perception and dynamic planning to interact with any application naturally.
 
 ## Technology
 - Python 3.13.15, `.venv`
@@ -69,50 +13,34 @@ Safety sits between reasoning and execution. Destructive, privacy-sensitive, or 
 See: `docs/TECHNOLOGY.md` for the authoritative complete technology stack.
 
 ## High-Level Architecture
-```text
-USER GOAL -> OMNIX EXECUTIVE -> UNDERSTAND -> REASON -> SELECT SPECIALISTS -> CREATE TASK GRAPH -> EXECUTE CAPABILITIES -> OBSERVE -> VERIFY -> (SUCCESS/RECOVER) -> COMMUNICATE
-```
-
-## Canonical Execution Lifecycle
-All requests, whether from voice, text, or events, flow through a single canonical execution model. There are no parallel, disconnected automation pipelines.
-
-## Major Subsystems
-- Omnix Executive
-- Brain / Goal Planner
-- Context / Memory Engine
-- Perception / Scene Modeler
-- Agent Registry & Specialist Agents (Browser, Desktop, etc.)
-- Capability Router & Controlled Capabilities
-- Verification & Recovery Engine
-- Communication / Personality Layer
-
-## Example Interactions
-User: "Open Chrome, search for AI agents, and open the second result."
-Omnix dynamically translates this into a sequence of goals: ensure browser running, navigate to search, interpret visual/DOM results, interact with the target element.
-
-## Golden Path Goals
-- "Open Notepad and type Hello Omnix."
-- "Find the PDF I downloaded yesterday."
-- "What's on my screen right now?"
-
-## Development Roadmap
-See `docs/TASKS.md` for the Phase 0 to Phase 20 rollout plan.
-
-## Current Project Status
-**Phase 0 - Blueprinting**: Establishing foundational architecture and documentation. See `docs/MEMORY.md`.
+- **Voice Input**: Captures and transcribes user intent locally.
+- **Executive**: Orchestrates the task lifecycle.
+- **Planning**: Generates dynamic acyclic `PlanRevisions`.
+- **Policy Engine**: Deterministically enforces safety rules.
+- **Capabilities**: Execute controlled OS functions.
+- **Perception**: Layered OS, UIA, and Vision understanding.
+- **Verification Engine**: Deterministically verifies action success.
+- **Character**: Expressive Godot-based presentation of technical state.
 
 ## Documentation Map
-- `docs/PRD.md`: Requirements
-- `docs/ARCHITECTURE.md`: System design
-- `docs/RULES.md`: Core architectural laws
-- `docs/TASKS.md`: Roadmap
-- `docs/DECISIONS.md`: ADRs
-- `docs/MEMORY.md`: Project state
-- `docs/TEST_PLAN.md`: Testing strategy
-- `docs/SECURITY.md`: Safety model
+Before contributing, you MUST read the following in order:
 
-## Contribution / Development Philosophy
-Read `AGENTS.md` and `docs/RULES.md` before coding. Never silently reinterpret the architecture. If a task conflicts with the Zero Hardcoded Command philosophy, stop and report it.
+1. `README.md`: This file.
+2. `AGENTS.md`: Strict rules for coding agents working on this repo.
+3. `docs/PRD.md`: Product requirements and out-of-scope boundaries.
+4. `docs/ARCHITECTURE.md`: Canonical system design and execution lifecycle.
+5. `docs/TECHNOLOGY.md`: Approved technology stack and decisions.
+6. `docs/DESIGN.md`: UX and character interaction principles.
+7. `docs/RULES.md`: Absolute architectural laws.
+8. `docs/TASKS.md`: Delivery roadmap.
+9. `docs/DECISIONS.md`: Architecture Decision Records (ADRs).
+10. `docs/MEMORY.md`: Current project status.
+11. `docs/TEST_PLAN.md`: Testing philosophy and gates.
+12. `docs/SECURITY.md`: Safety and Policy Engine boundaries.
+13. `docs/phases/README.md`: Execution rules for phase implementation.
 
-## North Star
-Omnix turns natural human goals into verified computer outcomes through dynamic reasoning, specialized agents, controlled capabilities, perception, verification and recovery.
+## Phase Specifications
+Detailed specifications for all 21 delivery phases are located in `docs/phases/`.
+
+## License
+TBD

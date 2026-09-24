@@ -1,112 +1,54 @@
-# Phase 01 — Runtime Foundation
+# Phase 1: Runtime Foundation
 
-## Status
-NOT STARTED
+## 1. What is being introduced?
+The core Python executable environment, logging, configuration loading, error handling, cancellation primitives, and dependency injection.
 
-## Purpose
-Build the runtime foundation without intelligence.
+## 2. Why is it introduced now?
+Because every higher-level component (Executive, Agents, Capabilities) needs a stable, structured environment to run, log its actions, and load its configuration.
 
-## Why This Phase Exists
-This phase establishes the necessary foundation for Runtime Foundation, ensuring that Omnix can fulfill its architectural requirements without resorting to hardcoded solutions.
+## 3. What components exist after this phase?
+Configuration Loader, Dependency Container, Logger Foundation, Event Bus (local), Cancellation Tokens, Core Error hierarchy.
 
-## User / System Outcome
-Upon completion, the system will support Runtime Foundation capabilities dynamically and safely.
+## 4. What interfaces/contracts exist?
+IEventBus, IConfiguration, ILoggerProvider.
 
-## Dependencies
-Phase 0
+## 5. What data models/concepts exist?
+OmnixConfig, OmnixError, EventMessage.
 
-## Prerequisites
-Completion of dependent phases and architectural review.
+## 6. How does this specific subsystem work?
+Using `pydantic-settings` to load `.env`, standard `logging`/`structlog` for structured stdout, and an `asyncio`-based dependency registry to inject singletons and transients.
 
-## Architecture Context
-Integrates into the Omnix Executive pipeline. Adheres to the Zero Hardcoded Command principle.
+## 7. What depends on it?
+Phase 2 (Core Contracts) and all subsequent phases.
 
+## 8. What is explicitly out of scope?
+AI/LLM integration, task planning, agent intelligence, Windows capabilities.
+
+## 9. What are the actual development tasks?
+1. Set up `src/` layout.
+2. Implement `OmnixConfig` with `pydantic-settings`.
+3. Set up structlog and Rich formatting.
+4. Build `asyncio` event bus.
+5. Create Dependency Container.
+6. Implement Cancellation primitives.
+
+## 10. What exact tests are required?
+Unit tests for config loading, event publish/subscribe, DI resolution, and structured error serialization.
+
+## 11. What real runtime validation is meaningful?
+Starting the application should successfully initialize DI, read valid `.env`, and shut down cleanly when cancelled.
+
+## 12. What constitutes success?
+The application can bootstrap, inject mock dependencies, run a simple event loop, and gracefully terminate.
+
+## 13. What failures must block progression?
+Failing to load config, DI cyclical dependencies, or hanging event loops block progression.
+
+## 14. What documentation must be updated?
+Update `MEMORY.md`, add module structure details.
+
+## 15. What does the next phase depend on?
+Phase 2 depends on the DI container and error models to define contracts.
 
 ## Technology Baseline
-This phase must follow the approved technologies and provider boundaries defined in:
-`../TECHNOLOGY.md`
-
-Relevant technologies for this phase: Python 3.13.15, `.venv`, `pip`, Pydantic, `asyncio`, logging/testing foundation.
-
-## Scope
-configuration, application/runtime bootstrap, startup, shutdown, service lifecycle, dependency management, health, logging, structured errors, event infrastructure, environment configuration, test infrastructure
-
-## Out of Scope
-AI reasoning, LLM integrations
-
-## Components Introduced
-- (To be defined during detailed design)
-
-## Responsibilities
-- Implement Runtime Foundation interfaces and logic.
-
-## Interfaces / Contracts Required
-- Standard Omnix Agent/Capability contracts.
-
-## Data Models / Concepts
-- Service Container
-- Event Bus
-- Structured Logger
-
-## Runtime Flow
-1. Executive requests capability.
-2. Capability executes.
-3. Verification checks outcome.
-
-## Detailed Tasks
-- TBD during implementation planning.
-
-## Suggested Task IDs
-- OMX-PH01-001
-
-## Development Order
-1. Define interfaces.
-2. Implement core logic.
-3. Integrate with Capability Router.
-4. Add tests.
-
-## Architecture Constraints
-- MUST NOT use hardcoded natural-language command routing.
-- MUST NOT bypass the Omnix Executive.
-
-## Failure Cases
-- Missing permissions.
-- Timeout during execution.
-
-## Safety Considerations
-- Follow `SECURITY.md` guidelines for all new capabilities.
-
-## Observability Requirements
-- Structured logging for all state changes.
-
-## Unit Testing Requirements
-- 100% coverage on core logic.
-
-## Integration Testing Requirements
-- Test with simulated World State.
-
-## Real Runtime Testing Requirements
-- Run application bootstrap and verify graceful shutdown.
-
-## Acceptance Criteria
-- System can start, load config, emit events, log structured data, and shutdown gracefully.
-
-## Definition of Done
-- Code merged.
-- Tests passing (including real runtime).
-- Documentation updated.
-
-## Required Evidence
-- Test logs demonstrating successful dynamic execution.
-
-## Documentation Updates
-- Update `MEMORY.md` and `TASKS.md`.
-
-## Risks
-- Unexpected OS behavior.
-
-## Open Questions
-- (To be determined)
-
-## Next Phase
-Proceed to Phase 02 once completed.
+This phase must follow the approved technologies and provider boundaries defined in `../TECHNOLOGY.md`.

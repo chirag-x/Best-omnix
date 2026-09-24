@@ -1,34 +1,31 @@
-# Project Memory (MEMORY.md)
+# Omnix Project Memory
 
-This file represents the CURRENT PROJECT STATE. Coding agents must read this to understand where development left off and must update it when they complete meaningful work.
-
-## Current Phase
-Phase 0
+## Current Phase: Phase 0
+**Status**: COMPLETE (Pending final audit confirmation)
 
 ## Current Objective
-Finalize complete Omnix architecture and documentation.
+Finalize architecture corrections and detailed phase specifications. Ensure a deterministic, single-model, non-hardcoded architecture is strictly documented.
 
-## Completed
-- Technology architecture documented.
-- `TECHNOLOGY.md` created.
-- Approved technology baseline established.
-- No implementation has begun solely because technology documentation exists.
-- Initial project vision defined.
-- Multi-agent executive direction defined.
-- Zero-hardcoded-task principle defined.
-- Core folder structure created.
-- `README.md`, `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `AGENTS.md`, `DECISIONS.md`, `SECURITY.md`, `TEST_PLAN.md`, `DESIGN.md`, `TASKS.md`, `.gitignore`, `.env.example` created.
-- `docs/phases/` fully populated with Phase 00 through Phase 20 specifications.
-- Comprehensive cross-document consistency review performed.
-
-## In Progress
-- (None) Phase 0 Blueprinting is effectively complete pending final human approval.
-
-## Not Started
-- Implementation phases (Phase 1 through Phase 20).
+## Completed Work
+- `TECHNOLOGY.md` created and acts as the authoritative source of truth.
+- `generate_phases.py` and `update_docs.py` scripts deleted to prevent documentation overwriting.
+- Phase order corrected to the canonical 21-phase roadmap.
+- 21 Phase specifications explicitly rewritten to remove TBDs and boilerplate.
+- `.env.example` corrected to remove vector DB, fast LLM, and unrestricted shell execution flags.
+- Canonical Risk Taxonomy (`LOW_RISK`, `SENSITIVE`, `DESTRUCTIVE`, etc.) defined.
+- Safety architecture updated to mandate a deterministic Policy Engine over an AI Safety Agent.
+- Verification architecture updated to prioritize deterministic OS checks over an AI Verification Agent.
+- WorldState explicitly defined as a versioned `WorldStateStore`, not a mutable singleton.
+- Task planning architecture refined to use acyclic `PlanRevisions`.
+- Memory explicitly constrained to SQLite/FTS5 (no embeddings).
+- Test plan stripped of arbitrary 100% requirements; focused on critical safety and architectural contracts.
+- Latency targets in PRD marked as TARGET / PROVISIONAL.
+- Package architecture explicitly laid out in `ARCHITECTURE.md`.
+- Canonical execution lifecycle documented.
+- Forbidden patterns explicitly cataloged.
 
 ## Known Issues
-- None yet.
+- None structurally.
 
 ## Validations Required (Future Tasks)
 - Validate Chatterbox-Turbo under exact Python 3.13.15 runtime environment.
@@ -36,13 +33,3 @@ Finalize complete Omnix architecture and documentation.
 - Validate Python <-> Godot IPC method.
 - Validate exact character asset format and packaging composition.
 - Validate exact GPU allocation strategy and latency/performance targets.
-
-## Next Step
-- Begin Phase 1 (Runtime Foundation) by initializing the Python project structure, dependency injection, and event bus based on the `docs/phases/PHASE_01_RUNTIME_FOUNDATION.md` specifications.
-
-## How to Update This File
-When future developers or agents complete a phase, task, or encounter a significant issue:
-1. Move items between Not Started -> In Progress -> Completed.
-2. Update the "Current Phase" and "Current Objective".
-3. Log any architecture-breaking bugs or blocking issues in "Known Issues".
-4. Explicitly state the "Next Step" to guide the next session.

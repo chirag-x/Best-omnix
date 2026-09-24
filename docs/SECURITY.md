@@ -1,91 +1,32 @@
-# Omnix Security and Safety Architecture (SECURITY.md)
+# Omnix Security and Safety Model
 
-## Security Goals
-- Prevent unintended destructive actions on the user's computer.
-- Prevent arbitrary code execution by hallucinating LLMs.
-- Protect user privacy (screen, mic, files).
-- Provide transparent authorization mechanisms.
+## 1. Safety Architecture
+Omnix operates with a strict separation between intelligence and enforcement. 
+- **Policy Engine**: The absolute, deterministic authority that enforces safety boundaries based on risk taxonomy.
+- **Safety Agent**: An LLM-backed agent that can advise on ambiguity, provide contextual risk interpretation, and assist classification, but can NEVER override the Policy Engine.
 
-## Threat Model
-1. **LLM Hallucination**: Model invents a dangerous command.
-2. **Prompt Injection**: A web page or document contains text instructing Omnix to perform malicious actions.
-3. **Over-privileged Execution**: An agent exploits a generic capability to bypass intent.
-4. **Data Exfiltration**: Sensitive on-screen data is sent to an untrusted third-party API.
+## 2. Capability Router and Authorization
+The `CapabilityRouter` sits between the Omnix Executive and OS Execution. 
+- Every capability declares its `CapabilityEffectType` (READ_ONLY or SIDE_EFFECTING).
+- The Router passes the request to the Policy Engine. 
+- The Policy Engine returns an authorization decision (ALLOW, DENY, REQUIRE_CONFIRMATION).
+- **LLM output cannot bypass this enforcement.** There is no global unrestricted shell toggle (e.g., `ENABLE_SHELL_EXECUTION`).
 
-## Trust Boundaries
-- **User Input**: Untrusted (could contain prompt injection).
-- **LLM Output (Plans/Reasoning)**: Untrusted. Must be validated.
-- **Agent Output**: Untrusted.
-- **Capability Router**: **TRUSTED**. This is the enforcement boundary.
-- **Controlled Capabilities**: **TRUSTED**. These actually execute code.
+## 3. Canonical Risk Taxonomy
+Omnix uses a single canonical risk taxonomy across all documentation and capability metadata:
+- `LOW_RISK`: Safe to execute autonomously (e.g., reading window titles).
+- `SENSITIVE`: Requires context or mild scrutiny (e.g., reading emails).
+- `DESTRUCTIVE`: Modifies or deletes data (e.g., deleting a file).
+- `IRREVERSIBLE`: Actions that cannot be undone (e.g., emptying trash).
+- `PRIVACY_SENSITIVE`: Accessing personal identifying info (e.g., passwords, cameras).
+- `EXTERNAL_SIDE_EFFECT`: Interacting with the outside world (e.g., sending an email, posting online).
 
-## LLM Trust Model
-The LLM is treated as an unreliable, untrusted reasoning engine. It cannot directly interact with the OS. It can only emit structured JSON requesting the execution of a registered Capability.
-
-## Agent Permissions
-Agents do not have permissions. They only propose plans.
-
-## Capability Permissions
-Capabilities are strictly typed and registered with a Risk Classification.
-
-## Risk Categories
-- **LOW RISK**: Read-only, local operations (e.g., get window list, read config).
-- **SENSITIVE**: Reads private data (e.g., take screenshot, read user files).
-- **DESTRUCTIVE**: Modifies or deletes state (e.g., close app, delete file).
-- **IRREVERSIBLE**: Actions that cannot be undone (e.g., empty recycle bin, send email).
-- **PRIVACY-SENSITIVE**: Records audio/video.
-- **EXTERNAL-SIDE-EFFECT**: Interacts with the internet (e.g., post a tweet).
-
-## User Authorization / Confirmation Policies
-- LOW RISK: Auto-allow.
-- SENSITIVE: Auto-allow (assuming user opted into AI assistant), but audited.
-- DESTRUCTIVE: Requires explicit user confirmation ("Should I delete this?").
-- IRREVERSIBLE: Requires explicit user confirmation.
-- EXTERNAL-SIDE-EFFECT: Requires explicit user confirmation unless pre-authorized for a specific domain.
-
-## Filesystem Safety
-Generic filesystem capabilities must prevent directory traversal attacks (e.g., `../../Windows/System32`).
-
-## Process Safety
-Killing processes must be restricted. Omnix should not be able to kill critical OS processes (e.g., `csrss.exe`, `explorer.exe`).
-
-## Shell Safety
-**CRITICAL**: There is NO generic `execute_shell_command(string)` capability exposed to the LLM. If shell commands are needed, they must be pre-written in a specific Capability with parameterized inputs (e.g., `git_commit(message)`), and the inputs must be sanitized.
-
-## Web Content / Prompt Injection
-When reading web pages or untrusted files, the Context Engine must demarcate the content clearly to the LLM to prevent the content from overriding the system prompt (e.g., using delimiters or separate LLM calls for analysis).
-
-## Network Safety
-No generic `curl(url, method, body)` capability. External calls must go through specific Integrations.
-
-## Credentials and Secrets
-Credentials (API keys) are stored in `.env` or the OS Credential Manager. They are NEVER passed into the LLM prompt. Capabilities fetch secrets directly at execution time.
-
-## Screen / Microphone Privacy
-Clear visual indicators must be present when the screen is being captured or the mic is hot.
-
-## Logging Privacy
-Logs must not contain raw screenshots, API keys, or sensitive user text by default.
-
-## Cancellation / Emergency Stop
-A hardware/OS level interrupt (e.g., global hotkey) must immediately kill all active Capabilities and Agents.
-
-## Agent Isolation
-Agents cannot read each other's memory directly to prevent a compromised/hallucinating agent from poisoning others.
-
-## Capability Validation
-The Capability Router must strictly validate JSON schemas for all arguments before executing a capability.
-
-## Audit Logging
-All capability executions, especially SENSITIVE and above, must be logged with timestamp, requested agent, arguments, and outcome.
-
-
-## Technology Security Implications
-Security implications of the approved technology stack (Refer to `TECHNOLOGY.md`):
-- **Ollama local model access**: Ensure local API is bound to localhost to prevent network exploitation. Ensure model files are safe.
+## 4. Technology Security Implications
+Security implications of the approved technology stack:
+- **Ollama local model access**: Ensure local API is bound to localhost to prevent network exploitation.
 - **Audio/Video**: Microphone access, screen capture (DXcam), wake-word audio, STT audio, and TTS output must be secured and clearly indicated to the user.
 - **Godot IPC**: Ensure IPC mechanisms (e.g., local WebSocket/named pipe) authenticate or restrict connections to the Python Omnix process only.
 - **Browser Automation**: Playwright profiles/sessions must be isolated to prevent accidental credential leakage or cookie hijacking.
-- **Windows APIs & Clipboard**: Restrict arbitrary access; capability router must mediate clipboard reads/writes.
+- **Windows APIs & Clipboard**: Restrict arbitrary access; Capability Router must mediate clipboard reads/writes.
 - **Storage & Config**: SQLite memory, logs, `.env` files must be protected. Prefer Windows Credential Manager / DPAPI for production secrets.
 - **Third-Party**: Ensure downloaded models and third-party character/audio asset licenses are reviewed.

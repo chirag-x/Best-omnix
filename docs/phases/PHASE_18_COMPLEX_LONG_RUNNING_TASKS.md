@@ -1,111 +1,52 @@
-# Phase 18 — Complex Long Running Tasks
+# Phase 18: Complex / Long-Running Tasks
 
-## Status
-NOT STARTED
+## 1. What is being introduced?
+Persistence, pausing, resuming, and checkpointing for large task graphs.
 
-## Purpose
-Support long, multi-step goals.
+## 2. Why is it introduced now?
+Some tasks take hours. Omnix must survive application restarts and allow users to pause or intervene.
 
-## Why This Phase Exists
-This phase establishes the necessary foundation for Complex Long Running Tasks, ensuring that Omnix can fulfill its architectural requirements without resorting to hardcoded solutions.
+## 3. What components exist after this phase?
+TaskPersister, CheckpointManager.
 
-## User / System Outcome
-Upon completion, the system will support Complex Long Running Tasks capabilities dynamically and safely.
+## 4. What interfaces/contracts exist?
+ITaskPersister.
 
-## Dependencies
-Phase 17
+## 5. What data models/concepts exist?
+PersistentTaskState, Checkpoint.
 
-## Prerequisites
-Completion of dependent phases and architectural review.
+## 6. How does this specific subsystem work?
+Executive serializes the current `TaskState` and `PlanRevision` to SQLite via `TaskPersister` at step boundaries. On startup, incomplete tasks can be resumed. Long-running verification handles asynchronous delays.
 
-## Architecture Context
-Integrates into the Omnix Executive pipeline. Adheres to the Zero Hardcoded Command principle.
+## 7. What depends on it?
+Phase 19 (Background automation).
 
+## 8. What is explicitly out of scope?
+Distributed task execution across multiple machines.
+
+## 9. What are the actual development tasks?
+1. Implement TaskState serialization.
+2. Implement pause/resume primitives in Executive.
+3. Build `CheckpointManager`.
+4. Handle long-polling verification.
+
+## 10. What exact tests are required?
+Serialization/deserialization tests, pause/resume state preservation tests.
+
+## 11. What real runtime validation is meaningful?
+Start a long task, kill the Omnix process, restart, and successfully resume execution from the last checkpoint.
+
+## 12. What constitutes success?
+Task state is durable and robust to process death.
+
+## 13. What failures must block progression?
+Corrupted state on resume, inability to cancel a long-running resumed task.
+
+## 14. What documentation must be updated?
+Update `MEMORY.md`.
+
+## 15. What does the next phase depend on?
+Phase 19.
 
 ## Technology Baseline
-This phase must follow the approved technologies and provider boundaries defined in:
-`../TECHNOLOGY.md`
-
-Relevant technologies for this phase: `asyncio`/task persistence technologies.
-
-## Scope
-large task graphs, dependencies, parallel steps, checkpoints, pause, resume, cancel, partial success, progress, persistent task state, replanning, long-running verification.
-
-## Out of Scope
-In-memory only execution (must survive restarts).
-
-## Components Introduced
-- (To be defined during detailed design)
-
-## Responsibilities
-- Implement Complex Long Running Tasks interfaces and logic.
-
-## Interfaces / Contracts Required
-- Standard Omnix Agent/Capability contracts.
-
-## Data Models / Concepts
-- Persistent Task State
-- Checkpointing
-
-## Runtime Flow
-1. Executive requests capability.
-2. Capability executes.
-3. Verification checks outcome.
-
-## Detailed Tasks
-- TBD during implementation planning.
-
-## Suggested Task IDs
-- OMX-PH18-001
-
-## Development Order
-1. Define interfaces.
-2. Implement core logic.
-3. Integrate with Capability Router.
-4. Add tests.
-
-## Architecture Constraints
-- MUST NOT use hardcoded natural-language command routing.
-- MUST NOT bypass the Omnix Executive.
-
-## Failure Cases
-- Missing permissions.
-- Timeout during execution.
-
-## Safety Considerations
-- Follow `SECURITY.md` guidelines for all new capabilities.
-
-## Observability Requirements
-- Structured logging for all state changes.
-
-## Unit Testing Requirements
-- 100% coverage on core logic.
-
-## Integration Testing Requirements
-- Test with simulated World State.
-
-## Real Runtime Testing Requirements
-- Pause a multi-step task, restart process, and resume.
-
-## Acceptance Criteria
-- Tasks can be safely persisted, paused, and resumed.
-
-## Definition of Done
-- Code merged.
-- Tests passing (including real runtime).
-- Documentation updated.
-
-## Required Evidence
-- Test logs demonstrating successful dynamic execution.
-
-## Documentation Updates
-- Update `MEMORY.md` and `TASKS.md`.
-
-## Risks
-- Unexpected OS behavior.
-
-## Open Questions
-- (To be determined)
-
-## Next Phase
-Proceed to Phase 19 once completed.
+This phase must follow the approved technologies and provider boundaries defined in `../TECHNOLOGY.md`.

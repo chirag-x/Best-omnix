@@ -1,112 +1,55 @@
-# Phase 00 — Blueprint
+# Phase 0: Blueprint + Architecture + Technology
 
-## Status
-IN PROGRESS
+## 1. What is being introduced?
+The foundational architectural documentation, blueprints, rulesets, and technology selection for the entire Omnix project.
 
-## Purpose
-Create and lock the architecture/documentation blueprint.
+## 2. Why is it introduced now?
+To ensure no ambiguity exists before implementation begins. Coding agents must have a unified, strict understanding of the system's design, boundaries, and dependencies.
 
-## Why This Phase Exists
-This phase establishes the necessary foundation for Blueprint, ensuring that Omnix can fulfill its architectural requirements without resorting to hardcoded solutions.
+## 3. What components exist after this phase?
+No runtime components. Only markdown documentation (README, PRD, ARCHITECTURE, TECHNOLOGY, DESIGN, RULES, TASKS, DECISIONS, MEMORY, TEST_PLAN, SECURITY, AGENTS) and canonical phase specifications.
 
-## User / System Outcome
-Upon completion, the system will support Blueprint capabilities dynamically and safely.
+## 4. What interfaces/contracts exist?
+None (documentation only).
 
-## Dependencies
-None
+## 5. What data models/concepts exist?
+None (documentation only).
 
-## Prerequisites
-Completion of dependent phases and architectural review.
+## 6. How does this specific subsystem work?
+By reading the documents, developers and agents understand the strict single-model architecture, the deterministic safety/verification engines, the acyclic PlanRevision models, the SQLite/FTS5 memory limits, and the exact dependency tree.
 
-## Architecture Context
-Integrates into the Omnix Executive pipeline. Adheres to the Zero Hardcoded Command principle.
+## 7. What depends on it?
+Every subsequent implementation phase (Phases 1-20).
 
+## 8. What is explicitly out of scope?
+Writing Python code, installing packages, testing real runtimes, configuring real LLMs.
+
+## 9. What are the actual development tasks?
+1. Write PRD.
+2. Write ARCHITECTURE.
+3. Write TECHNOLOGY.
+4. Write DECISIONS.
+5. Write RULES.
+6. Generate specific phase files.
+7. Resolve all conflicting statements across documentation.
+
+## 10. What exact tests are required?
+Documentation completeness validation. Link validation. Consistency review. Architecture dependency review. Forbidden-pattern review.
+
+## 11. What real runtime validation is meaningful?
+No real runtime validation required. Success is based on architectural clarity and human approval.
+
+## 12. What constitutes success?
+A fully consistent set of documentation without 'TBD' placeholders, contradictory architectures, or missing dependency rules.
+
+## 13. What failures must block progression?
+Contradictions regarding the LLM model strategy, presence of global shell execution switches, missing architectural dependencies, or vague phase documents block progression.
+
+## 14. What documentation must be updated?
+All core markdown files in the root and `docs/`.
+
+## 15. What does the next phase depend on?
+Phase 1 depends on this exact blueprint to begin coding.
 
 ## Technology Baseline
-This phase must follow the approved technologies and provider boundaries defined in:
-`../TECHNOLOGY.md`
-
-Relevant technologies for this phase: `TECHNOLOGY.md` is part of blueprint documentation.
-
-## Scope
-project vision, requirements, architecture, agent boundaries, capability boundaries, world state model, canonical lifecycle, zero-hardcoded-task law, testing strategy, security model, development rules, roadmap, decision records
-
-## Out of Scope
-Implementation of real Omnix features (Python runtime, AI integrations, etc.)
-
-## Components Introduced
-- (To be defined during detailed design)
-
-## Responsibilities
-- Implement Blueprint interfaces and logic.
-
-## Interfaces / Contracts Required
-- Standard Omnix Agent/Capability contracts.
-
-## Data Models / Concepts
-- Architecture blueprint
-- Phase standard
-- Rules
-
-## Runtime Flow
-1. Executive requests capability.
-2. Capability executes.
-3. Verification checks outcome.
-
-## Detailed Tasks
-- TBD during implementation planning.
-
-## Suggested Task IDs
-- OMX-PH00-001
-
-## Development Order
-1. Define interfaces.
-2. Implement core logic.
-3. Integrate with Capability Router.
-4. Add tests.
-
-## Architecture Constraints
-- MUST NOT use hardcoded natural-language command routing.
-- MUST NOT bypass the Omnix Executive.
-
-## Failure Cases
-- Missing permissions.
-- Timeout during execution.
-
-## Safety Considerations
-- Follow `SECURITY.md` guidelines for all new capabilities.
-
-## Observability Requirements
-- Structured logging for all state changes.
-
-## Unit Testing Requirements
-- 100% coverage on core logic.
-
-## Integration Testing Requirements
-- Test with simulated World State.
-
-## Real Runtime Testing Requirements
-- None (Documentation only)
-
-## Acceptance Criteria
-- All foundational docs exist. They agree. No major architecture contradiction remains. Phase 1 can be started without inventing foundational architecture.
-
-## Definition of Done
-- Code merged.
-- Tests passing (including real runtime).
-- Documentation updated.
-
-## Required Evidence
-- Test logs demonstrating successful dynamic execution.
-
-## Documentation Updates
-- Update `MEMORY.md` and `TASKS.md`.
-
-## Risks
-- Unexpected OS behavior.
-
-## Open Questions
-- (To be determined)
-
-## Next Phase
-Proceed to Phase 01 once completed.
+This phase must follow the approved technologies and provider boundaries defined in `../TECHNOLOGY.md`.

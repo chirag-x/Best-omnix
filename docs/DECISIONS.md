@@ -179,3 +179,45 @@ This file tracks major architectural decisions for Omnix.
 - **Alternatives considered**: Direct coupling.
 - **Consequences**: Slight abstraction overhead.
 - **Status**: ACCEPTED
+
+## ADR-025: Corrected Phase Dependency Order
+- **Context**: Phases must reflect architectural dependencies.
+- **Decision**: Execute phases strictly as: Contracts -> Executive -> Safety -> Capabilities -> Perception -> Verification -> Interaction.
+- **Reason**: We cannot build an Executive without Contracts. We cannot safely grant capabilities without Safety. We cannot automate reliably without Verification.
+- **Status**: ACCEPTED
+
+## ADR-026: Deterministic Policy Engine
+- **Context**: AI models can hallucinate dangerous actions.
+- **Decision**: Use a deterministic Policy Engine rather than an AI Safety Agent for final enforcement.
+- **Reason**: Safety requires guarantees, not probabilities.
+- **Status**: ACCEPTED
+
+## ADR-027: Deterministic-first Verification Engine
+- **Context**: Verification must be fast and reliable.
+- **Decision**: Use deterministic verifiers (Process, Window, UI, Filesystem) first. Only fallback to AI Verification Agent if UNCERTAIN.
+- **Reason**: Avoids slow, expensive, and hallucination-prone LLM calls for simple facts.
+- **Status**: ACCEPTED
+
+## ADR-028: WorldStateStore (Versioned Snapshots)
+- **Context**: Agents concurrent reads on a global mutable state leads to race conditions.
+- **Decision**: Use WorldStateStore to emit immutable WorldStateSnapshots and track WorldStateRevisions.
+- **Reason**: Safety and consistency for multi-agent reasoning.
+- **Status**: ACCEPTED
+
+## ADR-029: Acyclic PlanRevision Model
+- **Context**: Task execution often fails and requires completely new approaches.
+- **Decision**: Use a PlanRevision model. Each revision is an acyclic graph. Replanning generates a new revision.
+- **Reason**: Avoids complex cyclic execution graphs.
+- **Status**: ACCEPTED
+
+## ADR-030: No Unrestricted Shell
+- **Context**: Global generic shell execution is inherently dangerous for autonomous systems.
+- **Decision**: Remove global ENABLE_SHELL_EXECUTION toggles.
+- **Reason**: All capabilities must be explicitly authorized by the Policy Engine.
+- **Status**: ACCEPTED
+
+## ADR-031: Removal of Generation Scripts
+- **Context**: generate_phases.py and update_docs.py contained generic/outdated architectural text.
+- **Decision**: Delete them. Markdown documentation is the absolute source of truth.
+- **Reason**: Prevents future overwrites with outdated/boilerplate architectural concepts.
+- **Status**: ACCEPTED
