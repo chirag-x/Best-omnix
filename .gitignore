@@ -59,6 +59,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+/.vscode/
+
 
 # Omnix specific
 logs/
